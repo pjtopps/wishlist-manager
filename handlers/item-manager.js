@@ -7,11 +7,12 @@ exports.handler = async (event, context, callback) => {
     try {
         const { httpMethod } = event;
         const {
+            type,
             item_name,
             item_description = '',
-            dreamer_id,
-            giver_id = false,
             unwanted = false,
+            group_ids,
+            member_id,
         } = JSON.parse(event.body);
         
         let item_id;
@@ -24,33 +25,54 @@ exports.handler = async (event, context, callback) => {
                     item_id,
                     item_name,
                     item_description,
-                    dreamer_id,
+                    group_ids,
+                },
+            }).promise();
+            
+            await ddb.update({
+                TableName: 'wishlist_members',
+                Key: { member_id },
+                UpdateExpression: 'SET wishes = list_append(if_not_exists(wishes, :empty_list), :new_wish)',
+                ExpressionAttributeValues: {
+                    ':new_wish': [item_id],
+                    ':empty_list': [],
                 },
             }).promise();
         } else if (httpMethod === 'PUT') {
             item_id = event.queryStringParameters.item_id;
-            await ddb.update({
-                TableName: 'wishlist_items',
-                Key: { item_id },
-                UpdateExpression: `SET item_name = :item_name, item_description = :item_description, giver_id = :giver_id, unwanted = :unwanted`,
-                ExpressionAttributeValues: {
-                    ':item_name': item_name,
-                    ':item_description': item_description,
-                    ':giver_id': giver_id,
-                    ':unwanted': unwanted,
-                },
-            }).promise();
+            if (type === 'edit') {
+                await ddb.update({
+                    TableName: 'wishlist_items',
+                    Key: { item_id },
+                    UpdateExpression: `SET item_name = :item_name, item_description = :item_description, unwanted = :unwanted`,
+                    ExpressionAttributeValues: {
+                        ':item_name': item_name,
+                        ':item_description': item_description,
+                        ':unwanted': unwanted,
+                    },
+                }).promise();
+            } else if (type === 'claim') {
+                await ddb.update({
+                    TableName: 'wishlist_members',
+                    Key: { member_id },
+                    UpdateExpression: 'SET shopping = list_append(if_not_exists(shopping, :empty_list), :new_item)',
+                    ExpressionAttributeValues: {
+                        ':new_item': [item_id],
+                        ':empty_list': [],
+                    },
+                }).promise();
+            }
         }
         
         return callback(null, {
             statusCode: 200,
             body: JSON.stringify({
-                item_id,
+                type,
                 item_name,
                 item_description,
-                dreamer_id,
-                giver_id,
                 unwanted,
+                group_ids,
+                member_id,
             }),
         });
     } catch (e) {
