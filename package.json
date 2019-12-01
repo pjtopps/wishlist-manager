@@ -1,0 +1,23 @@
+{
+  "name": "wishlist-manager",
+  "version": "1.0.0",
+  "description": "Service to manage gift wish lists amongst groups",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pjtopps/wishlist-manager.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pjtopps/wishlist-manager/issues"
+  },
+  "homepage": "https://github.com/pjtopps/wishlist-manager#readme",
+  "dependencies": {
+    "aws-sdk": "^2.580.0",
+    "uuid": "^3.3.3"
+  }
+}
