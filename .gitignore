@@ -1,3 +1,6 @@
 scratch.js
+scratch.json
+
 *.zip
+
 nodejs/*
