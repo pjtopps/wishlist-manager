@@ -5,6 +5,7 @@ import { isEmpty } from 'lodash';
 import IdeaList from '../components/IdeasList';
 import WishList from '../components/WishList';
 import ShoppingList from '../components/ShoppingList';
+import { plural } from '../components/utils';
 import "../static/styles/index.css"
 
 class HomePage extends Component {
@@ -196,19 +197,21 @@ class HomePage extends Component {
         } else {
             body = (
                 <div className="form">
-                    <h3>{`Welcome ${data.member_name}!`}</h3>
-                    <button
-                        className="form__btn"
-                        onClick={() => this.setState({ viewing: 'wishlist' })}
-                    >
-                        My wishlist
-                    </button>
-                    <button
-                        className="form__btn"
-                        onClick={() => this.setState({ viewing: 'shopping' })}
-                    >
-                        My shopping list
-                    </button>
+                    <div className="btn-holder">
+                        <h2>{`Welcome ${data.member_name}!`}</h2>
+                        <button
+                            className="form__btn"
+                            onClick={() => this.setState({ viewing: 'wishlist' })}
+                        >
+                            My wishlist
+                        </button>
+                        <button
+                            className="form__btn"
+                            onClick={() => this.setState({ viewing: 'shopping' })}
+                        >
+                            My shopping list
+                        </button>
+                    </div>
                     {data.group_members.map(m => (
                         <div
                             className="card"
@@ -218,7 +221,7 @@ class HomePage extends Component {
                             <p>
                                 <strong>{m.name}</strong>
                                 <span>
-                                    {`${m.ideas.length} ideas available`}
+                                    {`${m.ideas.length} ${plural(m.ideas.length)} available`}
                                 </span>
                             </p>
                         </div>

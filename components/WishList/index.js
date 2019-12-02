@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { find } from 'lodash';
 import IdeaForm from './IdeaForm';
+import { plural } from '../utils';
 
 class WishList extends Component {
     constructor(props) {
@@ -30,7 +31,7 @@ class WishList extends Component {
         return (
             <div className="form">
                 <h3>My Wishlist</h3>
-                <p>{`${data.length} unclaimed ideas`}</p>
+                <h4>{`${data.length} unclaimed ${plural(data.length)}`}</h4>
                 {!openForm &&
                     <button
                         className="form__btn"
@@ -46,17 +47,19 @@ class WishList extends Component {
                     />}
                 {data.map(idea => (
                     <div className="idea">
-                        <p>
+                        <p style={{ flex: 3 }}>
                             <strong>{idea.item_name}</strong>
                             <br />
                             <span>{idea.item_description}</span>
                         </p>
                         <a
+                            style={{ flex: 1 }}
                             onClick={() => this.setState({ openForm: true, selected_item: idea.item_id })}
                         >
                             Edit
                         </a>
                         <a
+                            style={{ flex: 1 }}
                             onClick={() => removeItem(idea.item_id)}
                         >
                             Remove from wishlist

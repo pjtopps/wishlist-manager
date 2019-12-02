@@ -46,18 +46,20 @@ class IdeaForm extends Component {
                     value={item_description}
                     onChange={({ target }) => this.setState({ item_description: target.value })}
                 />
-                <button
-                    className="form__btn"
-                    onClick={this.props.close}
-                >
-                    Cancel
-                </button>
-                <button
-                    className="form__btn"
-                    onClick={this.submit}
-                >
-                    Submit
-                </button>
+                <div className="form-btn-holder">
+                    <button
+                        className="form__btn"
+                        onClick={this.props.close}
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        className="form__btn"
+                        onClick={this.submit}
+                    >
+                        Submit
+                    </button>
+                </div>
             </div>
         );
     }
