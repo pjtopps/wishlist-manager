@@ -36,7 +36,7 @@ exports.handler = async (event, context, callback) => {
         let claimed_items = [];
         group_members.forEach(m => claimed_items.push(...(m.shopping || [])));
         
-        await Promise.all(group_members.map(async member => {
+        const group_members_enriched = await Promise.all(group_members.map(async member => {
             let ideas = [];
             if (member.wishes) {
                 const result = await ddb.batchGet({
@@ -47,22 +47,34 @@ exports.handler = async (event, context, callback) => {
                     },
                 }).promise();
                 ideas = result.Responses.wishlist_items;
-                const claimed = ideas
+                const buying = ideas
                     .filter(idea => shopping_ids.includes(idea.item_id))
-                    .map(i => ({ ...i, name: member.member_name }));
-                shopping.push(...claimed);
+                    .map(i => ({ ...i, member_name: member.member_name }));
+                shopping.push(...buying);
             }
 
-            response[member.member_id] = {
+            ideas = ideas.filter(idea => !claimed_items.includes(idea.item_id));
+
+            if (member.member_id === member_id) {
+                response.member_name = member.member_name;
+                response.wishlist = ideas;
+                return null;
+            }
+
+            return {
                 name: member.member_name,
-                ideas: ideas.filter(idea => !claimed_items.includes(idea.item_id)),
+                id: member.member_id,
+                ideas,
             };
         }));
         
-        response[member_id].shopping = shopping;
+        response.shopping = shopping;
+        response.wishlist;
+        response.group_members = group_members_enriched.filter(m => m);
         
         return callback(null, {
             statusCode: 200,
+            headers: { 'Access-Control-Allow-Origin': '*' },
             body: JSON.stringify(response),
         });
     } catch (e) {

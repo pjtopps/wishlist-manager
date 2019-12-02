@@ -5,7 +5,6 @@ const ddb = new AWS.DynamoDB.DocumentClient();
 
 exports.handler = async (event, context, callback) => {
     try {
-        console.log('it begins');
         const {
             group_id,
             member_name,
@@ -38,6 +37,7 @@ exports.handler = async (event, context, callback) => {
         console.log('returning');
         const response = {
             statusCode: 200,
+            headers: { 'Access-Control-Allow-Origin': '*' },
             body: JSON.stringify({
                 member_id,
                 member_name,
