@@ -15,6 +15,7 @@ class HomePage extends Component {
             data: {},
             selected: null,
         };
+        this.getGroupData = this.getGroupData.bind(this);
         this.viewMember = this.viewMember.bind(this);
         this.claimItem = this.claimItem.bind(this);
         this.unClaimItem = this.unClaimItem.bind(this);
@@ -24,6 +25,10 @@ class HomePage extends Component {
     }
 
     componentDidMount() {
+        this.getGroupData();
+    }
+
+    getGroupData() {
         const group_id = Cookies.get('group_id');
         const member_id = Cookies.get('member_id');
 
@@ -57,7 +62,7 @@ class HomePage extends Component {
                 params: { item_id },
                 data: { member_id, type: 'claim' },
             })
-                .then(({ data }) => this.setState({ loading: false }))
+                .then(this.getGroupData)
                 .catch(error => {
                     console.log(error)
                     this.setState({
@@ -84,7 +89,7 @@ class HomePage extends Component {
                     group_ids: [group_id]
                 },
             })
-                .then(({ data }) => this.setState({ loading: false }))
+                .then(this.getGroupData)
                 .catch(error => {
                     console.log(error)
                     this.setState({
@@ -108,7 +113,7 @@ class HomePage extends Component {
                     type: 'edit',
                 },
             })
-                .then(({ data }) => this.setState({ loading: false }))
+                .then(this.getGroupData)
                 .catch(error => {
                     console.log(error)
                     this.setState({
