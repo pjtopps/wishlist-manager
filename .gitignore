@@ -1,6 +1,12 @@
-scratch.js
-scratch.json
+# dev playground
+scratch/*
 
+# Lambda layers prep
 *.zip
-
 nodejs/*
+
+# next build files
+.next/*
+out/*
+
+node_modules/*

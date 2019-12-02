@@ -4,7 +4,11 @@
   "description": "Service to manage gift wish lists amongst groups",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "next",
+    "build": "next build",
+    "start": "next start",
+    "export": "next export"
   },
   "repository": {
     "type": "git",
@@ -17,7 +21,14 @@
   },
   "homepage": "https://github.com/pjtopps/wishlist-manager#readme",
   "dependencies": {
+    "@zeit/next-css": "^1.0.1",
     "aws-sdk": "^2.580.0",
+    "axios": "^0.19.0",
+    "js-cookie": "^2.2.1",
+    "lodash": "^4.17.15",
+    "next": "^9.1.4",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "uuid": "^3.3.3"
   }
 }
