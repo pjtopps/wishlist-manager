@@ -62,10 +62,37 @@ exports.handler = async (event, context, callback) => {
                     },
                 }).promise();
             }
+        } else if(httpMethod === 'DELETE') {
+            item_id = event.queryStringParameters.item_id;
+            let col;
+            if (type === 'shopping') col = 'shopping';
+            if (type === 'wishes') col = 'wishes';
+
+            const { Item } = await ddb.get({
+                TableName: 'wishlist_members',
+                Key: { member_id },
+            }).promise();
+
+            const array = Item[col] || [];
+            const index = array.indexOf(item_id);
+
+            await ddb.update({
+                TableName: 'wishlist_members',
+                Key: { member_id },
+                UpdateExpression: `REMOVE ${col}[${index}]`,
+            }).promise();
+            
+            if (type === 'wishes') {
+                await ddb.delete({
+                    TableName: 'wishlist_items',
+                    Key: { item_id },
+                }).promise();
+            }
         }
         
         return callback(null, {
             statusCode: 200,
+            headers: { 'Access-Control-Allow-Origin': '*' },
             body: JSON.stringify({
                 type,
                 item_name,
