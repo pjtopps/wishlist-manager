@@ -73,8 +73,24 @@ class HomePage extends Component {
         });
     }
 
-    unClaimItem() {
-        // TODO
+    unClaimItem(item_id) {
+        const { member_id } = this.state;
+        this.setState({ loading: true }, () => {
+            axios({
+                method: 'delete',
+                url: 'https://q3c45tj831.execute-api.eu-west-2.amazonaws.com/v1/idea',
+                params: { item_id },
+                data: { member_id, type: 'shopping' },
+            })
+                .then(this.getGroupData)
+                .catch(error => {
+                    console.log(error)
+                    this.setState({
+                        loading: false,
+                        error: error.toString(),
+                    });
+                });
+        });
     }
 
     addNewItem(payload) {
@@ -124,8 +140,24 @@ class HomePage extends Component {
         });
     }
 
-    removeItem() {
-        // TODO
+    removeItem(item_id) {
+        const { member_id } = this.state;
+        this.setState({ loading: true }, () => {
+            axios({
+                method: 'delete',
+                url: 'https://q3c45tj831.execute-api.eu-west-2.amazonaws.com/v1/idea',
+                params: { item_id },
+                data: { member_id, type: 'wishes' },
+            })
+                .then(this.getGroupData)
+                .catch(error => {
+                    console.log(error)
+                    this.setState({
+                        loading: false,
+                        error: error.toString(),
+                    });
+                });
+        });
     }
 
     render() {
