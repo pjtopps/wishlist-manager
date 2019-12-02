@@ -22,6 +22,14 @@ class SignUpPage extends Component {
         const group_id = (group_query || '')
             .split('=')[1];
 
+        const existingMember = Cookies.get('member_id');
+        const existingGroup = Cookies.get('group_id');
+        const switchingGroup = group_id && group_id !== existingGroup;
+
+        if (existingMember && !switchingGroup) {
+            return this.setState({ loading: true }, () => Router.push('/'));
+        }
+
         Cookies.set('group_id', group_id, { expires: 60 });
         this.setState({ group_id });
     }
