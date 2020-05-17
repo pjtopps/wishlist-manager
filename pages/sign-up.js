@@ -10,7 +10,10 @@ class SignUpPage extends Component {
         super(props);
         this.state = {
             member_name: '',
+            passcode: '',
             loading: false,
+            login: false,
+            sign_up: false,
         }
         this.handleSubmit = this.handleSubmit.bind(this);
     }
@@ -30,8 +33,8 @@ class SignUpPage extends Component {
             return this.setState({ loading: true }, () => Router.push('/'));
         }
 
-        Cookies.set('group_id', group_id, { expires: 60 });
-        this.setState({ group_id });
+        if (group_id) Cookies.set('group_id', group_id, { expires: 60 });
+        this.setState({ group_id: group_id || existingGroup });
     }
 
     handleSubmit(e) {
@@ -40,7 +43,7 @@ class SignUpPage extends Component {
         axios({
             method: 'post',
             url: 'https://q3c45tj831.execute-api.eu-west-2.amazonaws.com/v1/sign-up',
-            data: pick(this.state, ['member_name', 'group_id']),
+            data: pick(this.state, ['member_name', 'group_id', 'passcode']),
         })
             .then(({ data }) => {
                 Cookies.set('member_id', data.member_id, { expires: 60 });
@@ -56,16 +59,44 @@ class SignUpPage extends Component {
     }
 
     render() {
-        const { member_name, error, loading } = this.state;
-        return (
-            <div className="form">
-                {loading &&
-                    <div className="loading-spinner-frame">
-                        <div className="lds-circle"><div></div></div>
-                    </div>}
+        const {
+            member_name,
+            error,
+            loading,
+            passcode,
+            log_in,
+            sign_up,
+        } = this.state;
+
+        let body;
+        if (log_in) {
+            body = [
+                <h3 className="form__question">
+                    Enter your passcode (3 alphanumeric characters)
+                </h3>,
+                <input
+                    className="form__input"
+                    type="text"
+                    placeholder="Passcode"
+                    value={passcode}
+                    onChange={e => this.setState({ passcode: e.target.value })}
+                />,
+                <button
+                    className="form__btn"
+                    onClick={this.handleSubmit}
+                >
+                    Log in
+                </button>,
+                error &&
+                    <h5 className="form__error">
+                        {error}
+                    </h5>,
+            ];
+        } else if (sign_up) {
+            body = [
                 <h3 className="form__question">
                     What name are you known by to the group?
-                </h3>
+                </h3>,
                 <input
                     className="form__input"
                     type="text"
@@ -73,17 +104,44 @@ class SignUpPage extends Component {
                     value={member_name}
                     onChange={e => this.setState({ member_name: e.target.value })}
                     
-                />
+                />,
                 <button
                     className="form__btn"
                     onClick={this.handleSubmit}
                 >
                     Join
-                </button>
-                {error &&
+                </button>,
+                error &&
                     <h5 className="form__error">
                         {error}
-                    </h5>}
+                    </h5>,
+            ]
+        } else {
+            body = (
+                <div className="form-btn-holder">
+                    <button
+                        className="form__btn"
+                        onClick={() => this.setState({ log_in: true })}
+                    >
+                        Login
+                    </button>
+                    <button
+                        className="form__btn"
+                        onClick={() => this.setState({ sign_up: true })}
+                    >
+                        Sign up
+                    </button>
+                </div>
+            );
+        }
+
+        return (
+            <div className="form">
+                {loading &&
+                    <div className="loading-spinner-frame">
+                        <div className="lds-circle"><div></div></div>
+                    </div>}
+                {body}
             </div>
         );
     }

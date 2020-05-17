@@ -24,6 +24,7 @@ a {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  max-width: 250px;
 }
 
 .form {
@@ -130,4 +131,10 @@ a {
   position: fixed;
   top: 12px;
   left: 12px;
+}
+
+.passcode-box {
+  position: fixed;
+  top: 12px;
+  right: 12px;
 }

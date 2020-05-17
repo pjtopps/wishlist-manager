@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Router from 'next/router'
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { isEmpty } from 'lodash';
@@ -161,12 +162,18 @@ class HomePage extends Component {
         });
     }
 
+    logout() {
+        Cookies.remove('member_id');
+        Router.push('/sign-up');
+    }
+
     render() {
         const {
             loading,
             data,
             viewing,
             selected_member,
+            member_id,
         } = this.state;
 
         let body;
@@ -243,6 +250,18 @@ class HomePage extends Component {
                     >
                         Go back
                     </button>}
+                {!viewing &&
+                    <button
+                        className="form__btn back-btn"
+                        onClick={this.logout}
+                    >
+                        Log out
+                    </button>}
+                <button
+                    className="form__btn passcode-box"
+                >
+                    {`Your passcode: ${(member_id || '').slice(0, 3)}`}
+                </button>
                 {body}
             </div>
         );
